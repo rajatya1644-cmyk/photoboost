@@ -3,495 +3,340 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#080810">
-<meta name="description" content="PhotoBoost — enhance your photos with free browser-based photo editing tools.">
-<title>PhotoBoost — Free Photo Enhancer</title>
-
+<title>PhotoBoost — AI Photo Enhancer</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
-
-:root {
-  --bg:#080810;
-  --panel:#11111d;
-  --panel2:#171727;
-  --line:rgba(255,255,255,.09);
-  --text:#f6f5ff;
-  --muted:#9291a9;
-  --purple:#9877ff;
-  --cyan:#75e4ff;
-}
-* {box-sizing:border-box;margin:0;padding:0}
-body {
-  background:
-    radial-gradient(ellipse at 15% 0%,rgba(112,65,255,.17),transparent 36%),
-    radial-gradient(ellipse at 90% 40%,rgba(56,129,255,.08),transparent 30%),
-    var(--bg);
-  color:var(--text);
-  font-family:Inter,Arial,sans-serif;
-  min-height:100vh;
-}
-button,input {font:inherit}
-button {cursor:pointer}
-.topbar {
-  height:76px;
-  padding:0 6%;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  border-bottom:1px solid var(--line);
-  background:rgba(8,8,16,.78);
-  backdrop-filter:blur(18px);
-  position:sticky;top:0;z-index:5;
-}
-.logo {
-  display:flex;align-items:center;gap:11px;
-  font:700 23px 'Space Grotesk',sans-serif;
-  letter-spacing:-1px;
-}
-.logo-icon {
-  display:grid;place-items:center;width:38px;height:38px;
-  border-radius:12px;
-  background:linear-gradient(135deg,#a68aff,#6240de);
-  box-shadow:0 0 25px #8056ff50;
-}
-.logo span span {color:var(--purple)}
-.top-label {
-  color:#c4b5ff;font-size:12px;font-weight:700;
-  background:#9877ff16;border:1px solid #9877ff38;
-  padding:9px 13px;border-radius:30px;
-}
-main {max-width:1160px;margin:auto;padding:55px 24px 70px}
-.hero {text-align:center;margin-bottom:38px}
-.eyebrow {
-  display:inline-flex;gap:8px;align-items:center;
-  border:1px solid #9877ff44;background:#9877ff12;
-  padding:8px 13px;border-radius:30px;color:#c8b9ff;
-  font-size:11px;font-weight:800;letter-spacing:1.5px;
-  text-transform:uppercase;
-}
-.dot {width:7px;height:7px;border-radius:50%;background:#a78bfa}
-h1 {
-  font:700 clamp(38px,6vw,65px)/1.08 'Space Grotesk',sans-serif;
-  letter-spacing:-2.8px;margin:22px 0 16px;
-}
-h1 span {
-  background:linear-gradient(90deg,#c0aaff,#8d7bff,#72ddff);
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-}
-.hero p {max-width:550px;margin:auto;color:var(--muted);font-size:15px;line-height:1.8}
-.editor {
-  display:grid;grid-template-columns:minmax(0,1fr) 310px;
-  border:1px solid var(--line);border-radius:22px;overflow:hidden;
-  background:rgba(17,17,29,.91);
-  box-shadow:0 25px 90px #0006,0 0 50px #7c50ff09;
-}
-.workspace {padding:23px;min-width:0}
-.workspace-head {
-  display:flex;align-items:center;justify-content:space-between;
-  gap:12px;margin-bottom:18px;flex-wrap:wrap;
-}
-.section-name {font-size:14px;font-weight:700}
-.status {color:#a6a2bb;font-size:11px}
-.preview {
-  position:relative;min-height:300px;height:390px;
-  display:flex;align-items:center;justify-content:center;
-  overflow:hidden;border-radius:15px;
-  border:1px dashed #ffffff20;
-  background-color:#0b0b14;
-  background-image:linear-gradient(45deg,#ffffff06 25%,transparent 25%),
-  linear-gradient(-45deg,#ffffff06 25%,transparent 25%),
-  linear-gradient(45deg,transparent 75%,#ffffff06 75%),
-  linear-gradient(-45deg,transparent 75%,#ffffff06 75%);
-  background-size:24px 24px;
-  background-position:0 0,0 12px,12px -12px,-12px 0;
-}
-#photoCanvas {max-width:100%;max-height:100%;object-fit:contain;display:none}
-.upload-prompt {text-align:center;padding:25px}
-.upload-icon {
-  width:66px;height:66px;margin:0 auto 18px;
-  border:1px solid #9877ff50;border-radius:20px;
-  background:#9877ff17;display:grid;place-items:center;font-size:28px;
-}
-.upload-prompt h3 {font-size:17px;margin-bottom:9px}
-.upload-prompt p {font-size:12px;color:var(--muted);line-height:1.7}
-.upload-btn,.primary {
-  border:0;color:white;font-weight:700;border-radius:11px;
-  padding:13px 18px;
-  background:linear-gradient(110deg,#9675ff,#6944df);
-  box-shadow:0 6px 24px #7950ff28;
-  transition:transform .2s,filter .2s;
-}
-.upload-btn {margin-top:20px}
-.upload-btn:hover,.primary:hover {transform:translateY(-2px);filter:brightness(1.13)}
-.preview-badge {
-  display:none;position:absolute;top:13px;left:13px;
-  background:#080810c9;border:1px solid #ffffff25;
-  padding:7px 10px;border-radius:8px;font-size:10px;font-weight:800;
-  letter-spacing:1px;
-}
-.toolbar {display:flex;gap:10px;flex-wrap:wrap;margin-top:17px}
-.secondary {
-  color:#dedbee;background:#ffffff08;border:1px solid var(--line);
-  border-radius:10px;padding:11px 14px;font-size:12px;font-weight:600;
-}
-.secondary:hover {background:#ffffff12}
-.toolbar .primary {margin-left:auto;padding:11px 17px;font-size:12px}
-.side {padding:24px;border-left:1px solid var(--line);background:#0d0d18}
-.side h2 {font-size:15px;margin-bottom:6px}
-.side-desc {font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:26px}
-.control {margin-bottom:23px}
-.control-top {display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.control label {font-size:12px;font-weight:600;color:#e3e0f4}
-.value {font-size:11px;color:#b7a5ff;font-weight:700}
-input[type=range] {
-  width:100%;height:4px;appearance:none;border-radius:20px;
-  background:linear-gradient(90deg,#9877ff,#4e3a84);
-  outline:none;
-}
-input[type=range]::-webkit-slider-thumb {
-  appearance:none;width:15px;height:15px;border-radius:50%;
-  background:#fff;border:3px solid #9877ff;
-  box-shadow:0 0 10px #9877ff75;
-}
-input[type=range]::-moz-range-thumb {
-  width:11px;height:11px;border-radius:50%;background:#fff;border:3px solid #9877ff;
-}
-.hint {font-size:10px;color:#77758e;margin-top:9px;line-height:1.6}
-.side-actions {display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:28px}
-.side-actions button {padding:12px 5px;font-size:11px}
-.tip {
-  margin-top:22px;border:1px solid #9877ff28;background:#9877ff0b;
-  padding:13px;border-radius:12px;color:#bdb4dc;font-size:11px;line-height:1.7;
-}
-.tip strong {color:#d7cbff}
-footer {text-align:center;color:#6e6c83;font-size:11px;padding:22px;line-height:1.8}
-footer strong {color:#aaa0ce}
-.hidden {display:none!important}
-@media(max-width:800px) {
-  main {padding:40px 15px}
-  .editor {grid-template-columns:1fr}
-  .side {border-left:0;border-top:1px solid var(--line)}
-  .preview {height:330px;min-height:230px}
-  .side {padding:22px}
-  .side-actions {margin-top:20px}
-}
-@media(max-width:450px) {
-  .topbar {height:65px;padding:0 16px}
-  .logo {font-size:20px}
-  .top-label {font-size:10px;padding:8px}
-  h1 {letter-spacing:-1.7px}
-  .workspace {padding:14px}
-  .preview {height:260px}
-  .toolbar button {flex:1}
-  .toolbar .primary {margin-left:0}
-}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at top,#211444,#080810 55%);color:#f6f3ff;font-family:Arial,sans-serif;min-height:100vh}
+header{padding:20px 6%;border-bottom:1px solid #ffffff18;display:flex;justify-content:space-between;align-items:center;background:#090912cc;position:sticky;top:0}
+.logo{font-size:24px;font-weight:800;letter-spacing:-1px}.logo span{color:#a78bfa}
+.tag{font-size:11px;color:#d4c5ff;border:1px solid #8b5cf655;border-radius:30px;padding:9px 12px}
+main{max-width:1050px;margin:auto;padding:45px 20px}
+.hero{text-align:center;margin-bottom:30px}
+.hero small{color:#c4b5fd;letter-spacing:2px;font-weight:bold}
+h1{font-size:clamp(35px,6vw,58px);letter-spacing:-2px;margin:18px 0}
+h1 span{color:#a78bfa}
+.hero p{color:#a5a1ba;line-height:1.7;font-size:14px}
+.app{display:grid;grid-template-columns:1fr 290px;background:#11111d;border:1px solid #ffffff15;border-radius:20px;overflow:hidden;box-shadow:0 20px 70px #0007}
+.work{padding:20px;min-width:0}
+.preview{height:350px;display:flex;align-items:center;justify-content:center;background:#090912;border:1px dashed #ffffff28;border-radius:14px;overflow:hidden;position:relative}
+#canvas{display:none;max-width:100%;max-height:100%;object-fit:contain}
+.prompt{text-align:center;padding:20px}.uploadicon{font-size:35px;margin-bottom:15px;color:#b7a2ff}
+.prompt p{color:#9995ae;font-size:12px;line-height:1.8}
+button{cursor:pointer;border:0;border-radius:10px;padding:12px 15px;font-weight:bold;font-size:12px;transition:.2s}
+button:hover:not(:disabled){filter:brightness(1.15);transform:translateY(-1px)}
+button:disabled{opacity:.4;cursor:not-allowed}
+.primary{background:linear-gradient(110deg,#a78bfa,#7047df);color:white}
+.secondary{background:#ffffff0a;border:1px solid #ffffff20;color:#eee9ff}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
+.actions button{flex:1}
+.panel{padding:22px;background:#0c0c16;border-left:1px solid #ffffff15}
+.panel h2{font-size:17px;margin:0 0 8px}
+.muted{font-size:12px;color:#9b97b0;line-height:1.7}
+.ai{margin:20px 0;padding:15px;background:#9877ff12;border:1px solid #9877ff40;border-radius:13px}
+.ai .primary{width:100%;margin-top:12px}
+.control{margin:22px 0}
+.control label{font-size:12px;font-weight:bold;display:flex;justify-content:space-between;margin-bottom:12px}
+.control output{color:#b9a5ff}
+input[type=range]{width:100%;accent-color:#a78bfa}
+#status{font-size:11px;color:#bcb3db;line-height:1.7;margin-top:12px;overflow-wrap:anywhere}
+footer{text-align:center;padding:25px;color:#77738d;font-size:11px;line-height:1.8}
+@media(max-width:760px){main{padding:30px 12px}.app{grid-template-columns:1fr}.panel{border-left:0;border-top:1px solid #ffffff15}.preview{height:280px}header{padding:17px}.logo{font-size:21px}}
 </style>
 </head>
 <body>
-<header class="topbar">
-  <div class="logo"><div class="logo-icon">✦</div><span>Photo<span>Boost</span></span></div>
-  <div class="top-label">✧ FREE PHOTO STUDIO</div>
+<header>
+  <div class="logo">✦ Photo<span>Boost</span></div>
+  <div class="tag">FREE PHOTO STUDIO</div>
 </header>
 
 <main>
   <section class="hero">
-    <div class="eyebrow"><span class="dot"></span> YOUR CREATIVE STUDIO</div>
-    <h1>Make every photo<br><span>look its best.</span></h1>
-    <p>A simple, free photo editor right in your browser. Adjust your images, preview the result and download your creation.</p>
+    <small>YOUR CREATIVE STUDIO</small>
+    <h1>Make every photo <span>shine.</span></h1>
+    <p>Edit your image for free and try AI-powered 2× upscaling directly in your browser.</p>
   </section>
 
-  <section class="editor">
-    <div class="workspace">
-      <div class="workspace-head">
-        <div class="section-name">Image workspace</div>
-        <div class="status" id="status">Waiting for your photo</div>
-      </div>
-
-      <div class="preview" id="dropZone">
-        <canvas id="photoCanvas"></canvas>
-        <div class="upload-prompt" id="uploadPrompt">
-          <div class="upload-icon">↥</div>
+  <section class="app">
+    <div class="work">
+      <div class="preview" id="dropzone">
+        <canvas id="canvas"></canvas>
+        <div class="prompt" id="prompt">
+          <div class="uploadicon">↥</div>
           <h3>Upload your photo</h3>
-          <p>Drag and drop an image here, or browse your device.<br>JPG, PNG and WebP supported.</p>
-          <button class="upload-btn" id="chooseBtn">Choose a photo ↗</button>
+          <p>Choose an image from your device<br>JPG, PNG or WebP · Maximum 5 MB recommended</p>
+          <button class="primary" id="choose">Choose photo</button>
         </div>
-        <div class="preview-badge" id="previewBadge">EDITED PREVIEW</div>
       </div>
-      <input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif" hidden>
-
-      <div class="toolbar">
-        <button class="secondary" id="compareBtn" disabled>◉ Compare original</button>
-        <button class="secondary" id="resetBtn" disabled>↺ Reset</button>
-        <button class="primary" id="downloadBtn" disabled>Download photo ↓</button>
+      <input type="file" id="file" accept="image/png,image/jpeg,image/webp" hidden>
+      <div class="actions">
+        <button class="secondary" id="new" disabled>New photo</button>
+        <button class="secondary" id="compare" disabled>Show original</button>
+        <button class="secondary" id="reset" disabled>Reset edits</button>
+        <button class="primary" id="download" disabled>Download ↓</button>
       </div>
+      <div id="status">Choose a photo to get started.</div>
     </div>
 
-    <aside class="side">
-      <h2>Adjustments</h2>
-      <p class="side-desc">Fine-tune your image with simple editing controls.</p>
+    <aside class="panel">
+      <h2>AI Studio</h2>
+      <p class="muted">Try neural-network upscaling. The first use downloads the model from a public CDN.</p>
+      <div class="ai">
+        <strong>✦ AI Upscale 2×</strong>
+        <p class="muted">Attempts to increase resolution and reconstruct image details. Results vary by photo.</p>
+        <button class="primary" id="ai" disabled>✨ Enhance with AI</button>
+      </div>
 
+      <h2>Adjustments</h2>
+      <p class="muted">Fine-tune your photo before downloading.</p>
       <div class="control">
-        <div class="control-top"><label for="brightness">☼ Brightness</label><span class="value" id="brightnessValue">100%</span></div>
+        <label>Brightness <output id="bv">100%</output></label>
         <input id="brightness" type="range" min="0" max="200" value="100">
       </div>
-
       <div class="control">
-        <div class="control-top"><label for="contrast">◐ Contrast</label><span class="value" id="contrastValue">100%</span></div>
+        <label>Contrast <output id="cv">100%</output></label>
         <input id="contrast" type="range" min="0" max="200" value="100">
       </div>
-
       <div class="control">
-        <div class="control-top"><label for="saturation">◈ Saturation</label><span class="value" id="saturationValue">100%</span></div>
+        <label>Saturation <output id="sv">100%</output></label>
         <input id="saturation" type="range" min="0" max="200" value="100">
       </div>
-
-      <div class="control">
-        <div class="control-top"><label for="sharpness">✧ Sharpness</label><span class="value" id="sharpnessValue">0</span></div>
-        <input id="sharpness" type="range" min="0" max="100" value="0">
-        <p class="hint">Adds a basic sharpening effect. Strong settings can create artifacts.</p>
-      </div>
-
-      <div class="side-actions">
-        <button class="secondary" id="newPhotoBtn">＋ New photo</button>
-        <button class="secondary" id="resetAllBtn">Reset all ↺</button>
-      </div>
-
-      <div class="tip"><strong>✦ Quick tip</strong><br>Small adjustments usually give more natural results. Your selected photo is processed in this browser.</div>
     </aside>
   </section>
 </main>
 
 <footer>
-  <strong>PhotoBoost</strong> · Free browser-based photo editing<br>
-  Your photo stays on your device in this version. No upload to a server.<br>
-  Note: These are standard image adjustments, not AI enhancement or true AI upscaling.
+  PhotoBoost · Free browser-based photo tools<br>
+  Images are processed in your browser. The AI libraries and model are downloaded from a public CDN.<br>
+  AI results may vary and do not guarantee recovery of genuine missing details.
 </footer>
+
+<!-- Browser AI libraries -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@upscalerjs/default-model@latest/dist/umd/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/upscaler@latest/dist/browser/umd/upscaler.min.js"></script>
 
 <script>
 (() => {
-  const canvas = document.getElementById('photoCanvas');
-  const ctx = canvas.getContext('2d', { willReadFrequently: true });
-  const fileInput = document.getElementById('fileInput');
-  const prompt = document.getElementById('uploadPrompt');
-  const badge = document.getElementById('previewBadge');
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d', {willReadFrequently:true});
+  const file = document.getElementById('file');
+  const prompt = document.getElementById('prompt');
   const status = document.getElementById('status');
-  const dropZone = document.getElementById('dropZone');
 
-  const ids = ['brightness','contrast','saturation','sharpness'];
-  let originalImage = null;
-  let originalPixels = null;
+  let source = null;
+  let base = null;
   let comparing = false;
-  let renderToken = 0;
+  let busy = false;
+  let aiEngine = null;
 
-  const get = id => document.getElementById(id);
+  const $ = id => document.getElementById(id);
+  const sliders = ['brightness','contrast','saturation'];
 
-  function updateButtons(enabled) {
-    get('compareBtn').disabled = !enabled;
-    get('resetBtn').disabled = !enabled;
-    get('downloadBtn').disabled = !enabled;
-    get('resetAllBtn').disabled = !enabled;
-  }
+  function say(message) { status.textContent = message; }
 
-  function values() {
-    return {
-      brightness: Number(get('brightness').value),
-      contrast: Number(get('contrast').value),
-      saturation: Number(get('saturation').value),
-      sharpness: Number(get('sharpness').value)
-    };
-  }
-
-  function updateLabels() {
-    ids.forEach(id => {
-      get(id + 'Value').textContent =
-        id === 'sharpness' ? get(id).value : get(id).value + '%';
+  function buttons(enabled) {
+    ['new','compare','reset','download','ai'].forEach(id => {
+      $(id).disabled = !enabled || busy;
     });
   }
 
-  function resetControls() {
-    get('brightness').value = 100;
-    get('contrast').value = 100;
-    get('saturation').value = 100;
-    get('sharpness').value = 0;
-    updateLabels();
+  function render() {
+    if (!base || comparing) return;
+    canvas.width = base.width;
+    canvas.height = base.height;
+    ctx.putImageData(base,0,0);
+
+    const brightness = $('brightness').value;
+    const contrast = $('contrast').value;
+    const saturation = $('saturation').value;
+
+    const temp = document.createElement('canvas');
+    temp.width = base.width;
+    temp.height = base.height;
+    temp.getContext('2d').putImageData(base,0,0);
+
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.filter = `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`;
+    ctx.drawImage(temp,0,0);
+    ctx.filter = 'none';
+
+    $('bv').textContent = brightness + '%';
+    $('cv').textContent = contrast + '%';
+    $('sv').textContent = saturation + '%';
   }
 
-  function showImage(file) {
-    if (!file || !file.type.startsWith('image/')) {
-      alert('Please choose a valid image file.');
-      return;
-    }
-    if (file.size > 15 * 1024 * 1024) {
-      alert('Please choose an image smaller than 15 MB.');
-      return;
-    }
+  function setBase(img) {
+    const scale = Math.min(1,1600/img.width,1600/img.height);
+    canvas.width = Math.max(1,Math.round(img.width*scale));
+    canvas.height = Math.max(1,Math.round(img.height*scale));
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.drawImage(img,0,0,canvas.width,canvas.height);
+    base = ctx.getImageData(0,0,canvas.width,canvas.height);
+    source = img;
+    canvas.style.display = 'block';
+    prompt.style.display = 'none';
+    comparing = false;
+    $('compare').textContent = 'Show original';
+    sliders.forEach(id => $(id).value = 100);
+    render();
+    buttons(true);
+    say(`Photo ready · ${canvas.width} × ${canvas.height} px`);
+  }
 
-    const url = URL.createObjectURL(file);
+  function loadPhoto(selected) {
+    if (!selected || !selected.type.startsWith('image/')) {
+      say('Please choose a valid image file.');
+      return;
+    }
+    if (selected.size > 15*1024*1024) {
+      say('This file is too large. Please choose a photo under 15 MB.');
+      return;
+    }
+    const url = URL.createObjectURL(selected);
     const img = new Image();
-
     img.onload = () => {
       URL.revokeObjectURL(url);
-      originalImage = img;
-
-      // Limit working size to keep browser processing responsive.
-      const scale = Math.min(1, 2400 / img.width, 2400 / img.height);
-      canvas.width = Math.max(1, Math.round(img.width * scale));
-      canvas.height = Math.max(1, Math.round(img.height * scale));
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      originalPixels = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
-      canvas.style.display = 'block';
-      prompt.classList.add('hidden');
-      badge.style.display = 'block';
-      status.textContent = canvas.width + ' × ' + canvas.height + ' px';
-      resetControls();
-      comparing = false;
-      get('compareBtn').textContent = '◉ Compare original';
-      updateButtons(true);
-      render();
+      setBase(img);
     };
-
     img.onerror = () => {
       URL.revokeObjectURL(url);
-      alert('This image could not be opened. Try a JPG or PNG image.');
+      say('Could not open this image. Try a JPG or PNG.');
     };
-
     img.src = url;
   }
 
-  function render() {
-    if (!originalImage || !originalPixels || comparing) return;
+  $('choose').onclick = () => file.click();
+  $('new').onclick = () => file.click();
+  file.onchange = () => {
+    if (file.files[0]) loadPhoto(file.files[0]);
+    file.value = '';
+  };
 
-    const token = ++renderToken;
-    const v = values();
-    const w = canvas.width;
-    const h = canvas.height;
-
-    ctx.putImageData(originalPixels, 0, 0);
-    ctx.filter = `brightness(${v.brightness}%) contrast(${v.contrast}%) saturate(${v.saturation}%)`;
-    ctx.drawImage(canvas, 0, 0);
-    ctx.filter = 'none';
-
-    if (v.sharpness > 0) {
-      // Mild unsharp-mask effect. The work is limited to the image canvas.
-      const current = ctx.getImageData(0, 0, w, h);
-      const src = current.data;
-      const blurred = new Uint8ClampedArray(src.length);
-      const amount = (v.sharpness / 100) * 0.8;
-
-      // Approximate a small blur with a 3x3 neighborhood.
-      for (let y = 1; y < h - 1; y++) {
-        if (token !== renderToken) return;
-        for (let x = 1; x < w - 1; x++) {
-          const i = (y * w + x) * 4;
-          for (let c = 0; c < 3; c++) {
-            blurred[i+c] = (
-              src[i - w*4 + c] + src[i + w*4 + c] +
-              src[i - 4 + c] + src[i + 4 + c] +
-              src[i - w*4 - 4 + c] + src[i - w*4 + 4 + c] +
-              src[i + w*4 - 4 + c] + src[i + w*4 + 4 + c]
-            ) / 8;
-          }
-          blurred[i+3] = src[i+3];
-        }
-      }
-
-      for (let y = 1; y < h - 1; y++) {
-        for (let x = 1; x < w - 1; x++) {
-          const i = (y * w + x) * 4;
-          for (let c = 0; c < 3; c++) {
-            src[i+c] = src[i+c] + (src[i+c] - blurred[i+c]) * amount;
-          }
-        }
-      }
-      ctx.putImageData(current, 0, 0);
+  sliders.forEach(id => $(id).addEventListener('input', () => {
+    if (!base) return;
+    if (comparing) {
+      comparing = false;
+      $('compare').textContent = 'Show original';
     }
+    render();
+  }));
 
-    badge.textContent = 'EDITED PREVIEW';
-  }
+  $('reset').onclick = () => {
+    if (!base) return;
+    sliders.forEach(id => $(id).value = 100);
+    render();
+    say('Adjustments reset.');
+  };
 
-  function toggleCompare() {
-    if (!originalImage) return;
+  $('compare').onclick = () => {
+    if (!base) return;
     comparing = !comparing;
     if (comparing) {
-      ctx.putImageData(originalPixels, 0, 0);
-      badge.textContent = 'ORIGINAL PHOTO';
-      get('compareBtn').textContent = '◉ Show edits';
+      ctx.putImageData(base,0,0);
+      $('compare').textContent = 'Show edits';
     } else {
-      get('compareBtn').textContent = '◉ Compare original';
+      $('compare').textContent = 'Show original';
       render();
     }
-  }
+  };
 
-  function reset() {
-    if (!originalImage) return;
-    comparing = false;
-    resetControls();
-    get('compareBtn').textContent = '◉ Compare original';
-    render();
-  }
-
-  function download() {
-    if (!originalImage) return;
-    if (comparing) toggleCompare();
-
+  $('download').onclick = () => {
+    if (!base) return;
+    if (comparing) {
+      comparing = false;
+      $('compare').textContent = 'Show original';
+      render();
+    }
     canvas.toBlob(blob => {
-      if (!blob) {
-        alert('Could not export the image. Please try again.');
-        return;
-      }
+      if (!blob) return say('Could not export the image. Please try again.');
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
       a.download = 'photoboost-enhanced.png';
-      document.body.appendChild(a);
       a.click();
-      a.remove();
       URL.revokeObjectURL(url);
-    }, 'image/png');
-  }
+      say('Your edited photo was downloaded.');
+    },'image/png');
+  };
 
-  get('chooseBtn').addEventListener('click', () => fileInput.click());
-  get('newPhotoBtn').addEventListener('click', () => fileInput.click());
-  fileInput.addEventListener('change', e => {
-    if (e.target.files && e.target.files[0]) showImage(e.target.files[0]);
-    fileInput.value = '';
+  $('dropzone').addEventListener('dragover', e => {
+    e.preventDefault();
+    $('dropzone').style.borderColor = '#a78bfa';
+  });
+  $('dropzone').addEventListener('dragleave', () => {
+    $('dropzone').style.borderColor = '';
+  });
+  $('dropzone').addEventListener('drop', e => {
+    e.preventDefault();
+    $('dropzone').style.borderColor = '';
+    if (e.dataTransfer.files[0]) loadPhoto(e.dataTransfer.files[0]);
   });
 
-  ids.forEach(id => {
-    get(id).addEventListener('input', () => {
-      updateLabels();
+  $('ai').onclick = async () => {
+    if (!base || busy) return;
+
+    if (!window.tf || !window.Upscaler || !window.DefaultUpscalerJSModel) {
+      say('AI libraries did not load. Check your internet connection, refresh the page and try again.');
+      return;
+    }
+
+    busy = true;
+    buttons(true);
+    $('ai').textContent = 'Loading AI…';
+    say('Preparing AI model. First use can take a while. Keep this tab open.');
+
+    try {
+      if (!aiEngine) {
+        aiEngine = new window.Upscaler({
+          model: window.DefaultUpscalerJSModel
+        });
+      }
+
+      // Use the current edited photo as the AI input.
       if (comparing) {
         comparing = false;
-        get('compareBtn').textContent = '◉ Compare original';
+        $('compare').textContent = 'Show original';
+        render();
       }
-      render();
-    });
-  });
 
-  get('compareBtn').addEventListener('click', toggleCompare);
-  get('resetBtn').addEventListener('click', reset);
-  get('resetAllBtn').addEventListener('click', reset);
-  get('downloadBtn').addEventListener('click', download);
+      const output = await aiEngine.upscale(canvas, {
+        patchSize: 64,
+        padding: 5,
+        progress: (amount) => {
+          if (typeof amount === 'number') {
+            say('AI is processing your photo… ' + Math.round(amount*100) + '%');
+          }
+        }
+      });
 
-  dropZone.addEventListener('dragover', e => {
-    e.preventDefault();
-    dropZone.style.borderColor = '#9877ff';
-  });
-  dropZone.addEventListener('dragleave', () => {
-    dropZone.style.borderColor = '';
-  });
-  dropZone.addEventListener('drop', e => {
-    e.preventDefault();
-    dropZone.style.borderColor = '';
-    if (e.dataTransfer.files[0]) showImage(e.dataTransfer.files[0]);
-  });
+      const enhanced = new Image();
+      enhanced.onload = () => {
+        setBase(enhanced);
+        say(`AI upscaling complete · ${enhanced.width} × ${enhanced.height} px. Download to save.`);
+        finish();
+      };
+      enhanced.onerror = () => {
+        say('AI returned an image that could not be opened. Try another photo.');
+        finish();
+      };
+      enhanced.src = output;
 
-  updateLabels();
-  updateButtons(false);
+    } catch (error) {
+      console.error(error);
+      say('AI could not finish. Try a smaller photo, refresh the page or check the browser console.');
+      finish();
+    }
+
+    function finish() {
+      busy = false;
+      buttons(!!base);
+      $('ai').textContent = '✨ Enhance with AI';
+    }
+  };
+
+  buttons(false);
 })();
 </script>
 </body>
